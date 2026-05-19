@@ -33,11 +33,12 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 # --- Étape 2 : Environnement d'exécution final ---
 FROM php:8.2-fpm-alpine
 
-# Installer Nginx et les dépendances d'exécution (Ajout de zlib ici aussi)
-RUN apk add --no-cache nginx bash libpng libjpeg-turbo freetype libzip oniguruma zlib
+# Installer Nginx et les dépendances d'exécution (runtime only, pas dev)
+RUN apk add --no-cache nginx bash sed libpng libjpeg-turbo freetype libzip oniguruma zlib
 
-# Réinstaller les extensions PHP dans le conteneur final
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath zip
+# Copier les extensions PHP compilées de l'étape 1
+COPY --from=backend-builder /usr/local/lib/php/extensions/no-debug-non-zts-20220829/ /usr/local/lib/php/extensions/no-debug-non-zts-20220829/
+COPY --from=backend-builder /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
 
 WORKDIR /var/www/html
 
