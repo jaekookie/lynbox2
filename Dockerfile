@@ -1,7 +1,7 @@
 # --- Étape 1 : Build des dépendances PHP avec Composer ---
 FROM php:8.2-fpm-alpine AS backend-builder
 
-# Installer les dépendances système requises pour les extensions PHP
+# Installer les dépendances système (Ajout de zlib-dev ici)
 RUN apk add --no-cache \
     bash \
     curl \
@@ -14,6 +14,7 @@ RUN apk add --no-cache \
     unzip \
     git \
     oniguruma-dev \
+    zlib-dev \
     build-base
 
 # Installer et activer les extensions PHP nécessaires pour Laravel
@@ -32,12 +33,11 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 # --- Étape 2 : Environnement d'exécution final ---
 FROM php:8.2-fpm-alpine
 
-# Installer Nginx et les dépendances d'exécution pour les extensions
-RUN apk add --no-cache nginx bash sed libpng libjpeg-turbo freetype libzip oniguruma
+# Installer Nginx et les dépendances d'exécution (Ajout de zlib ici aussi)
+RUN apk add --no-cache nginx bash libpng libjpeg-turbo freetype libzip oniguruma zlib
 
 # Réinstaller les extensions PHP dans le conteneur final
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
+RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath zip
 
 WORKDIR /var/www/html
 
