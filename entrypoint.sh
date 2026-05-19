@@ -15,7 +15,7 @@ php-fpm -D
 sleep 2
 
 # Substituer les variables d'environnement dans la configuration Nginx
-PORT=${PORT:-80}
+PORT=${PORT:-8080}
 sed -i "s/listen \${PORT:-80}/listen $PORT/" /etc/nginx/nginx.conf
 
 # Lancement de Nginx au premier plan pour maintenir le conteneur actif
