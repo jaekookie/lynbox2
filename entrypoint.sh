@@ -16,7 +16,7 @@ sleep 2
 
 # Substituer les variables d'environnement dans la configuration Nginx
 PORT=${PORT:-8080}
-sed -i "s/listen \${PORT:-80}/listen $PORT/" /etc/nginx/nginx.conf
+sed -i "s|\${PORT:-8080}|$PORT|g" /etc/nginx/nginx.conf
 
 # Lancement de Nginx au premier plan pour maintenir le conteneur actif
 echo "Lancement de Nginx sur le port $PORT..."
