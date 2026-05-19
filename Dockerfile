@@ -33,10 +33,11 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 FROM php:8.2-fpm-alpine
 
 # Installer Nginx et les dépendances d'exécution pour les extensions
-RUN apk add --no-cache nginx bash libpng libjpeg-turbo freetype libzip oniguruma
+RUN apk add --no-cache nginx bash sed libpng libjpeg-turbo freetype libzip oniguruma
 
 # Réinstaller les extensions PHP dans le conteneur final
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath zip
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
 
 WORKDIR /var/www/html
 
