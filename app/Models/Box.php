@@ -58,3 +58,4 @@ class Box extends Model
         return $this->stock_quantity > 0 && $this->is_active;
     }
 }
+
