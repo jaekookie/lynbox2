@@ -1,7 +1,9 @@
 FROM php:8.4-apache
 
-# 1. Corriger le problème de double MPM d'Apache (Force l'utilisation de prefork pour PHP)
-RUN a2dismod mpm_event || true && a2enmod mpm_prefork
+# 1. Désactiver radicalement mpm_event en le commentant dans la conf Apache
+RUN sed -i 's/^LoadModule mpm_event_module/# LoadModule mpm_event_module/' /etc/apache2/mods-available/mpm_event.load \
+    && a2dismod mpm_event || true \
+    && a2enmod mpm_prefork
 
 # 2. Installer les extensions PHP nécessaires pour Laravel et MySQL
 RUN apt-get update && apt-get install -y \
