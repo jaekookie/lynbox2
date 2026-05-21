@@ -1,7 +1,8 @@
 FROM php:8.4-apache
 
-# 1. Désactiver radicalement mpm_event en le commentant dans la conf Apache
-RUN sed -i 's/^LoadModule mpm_event_module/# LoadModule mpm_event_module/' /etc/apache2/mods-available/mpm_event.load \
+# 1. Nettoyer radicalement les résidus de mpm_event pour éviter le crash Apache
+RUN rm -f /etc/apache2/mods-enabled/mpm_event.load \
+    && rm -f /etc/apache2/mods-enabled/mpm_event.conf \
     && a2dismod mpm_event || true \
     && a2enmod mpm_prefork
 
